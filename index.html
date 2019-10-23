@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>UnityWebGl</title>
+        <script src="js/jquery-3.1.1.js"></script>
+        <script src="awrtc.js"></script>
+    </head>
+    <body>
+        <input id='inputUrl' value='wss://localhost:8443/api/v1/h5srtcapi?token=token1&profile=main&session=null' style='width:100%;'/>
+        <button id='btnPlay'>play</button>
+        <button id='btnStop'>Stop</button>
+        <button id='btnPause'>Pause</button>
+        <button id='btnContinue'>Continue</button>
+        <button id='btnUpdate'>Update</button>
+        <button id='btnGetFrame'>GetFrame</button>
+        <button id='btnTriggerEvent'>TriggerEvent</button>
+        <video class="h5video1" id="video1" autoplay webkit-playsinline playsinline></video>
+    </body>
+    <script>
+     window.onload = function(){
+         console.log('onload');
+        var call=null;
+         var url=$('#inputUrl').val();
+         //    ws://localhost:8085/api/v1/h5srtcapi?token=token1&profile=main&session=null
+         //    ws://localhost:8443/api/v1/h5srtcapi?token=token1&profile=main&session=null
+         //    wss://localhost:8443/api/v1/h5swsapi?token=token1&profile=main&session=null
+         $('#btnPlay').click(function(){
+             console.log('play',url);
+             var config={};
+             var url="wss://localhost:8443/api/v1/h5srtcapi?token=token1&profile=main&session=null";
+             call=awrtc.CAPI_H5Stream_GetVideo(url);
+             console.log('call',call);
+         });
+         $('#btnUpdate').click(function(){
+             console.log('Update',call);
+             call.Update();
+         });
+         $('#btnGetFrame').click(function(){
+             console.log('GetFrame call',call);
+             console.log('GetFrame media network',call.mNetwork);//BrowserMediaNetwork
+             console.log('GetFrame ws network',call.mNetwork.mSignalingNetwork);//WebSocketNetwork
+             console.log('GetFrame remoteStream',call.mNetwork.mSignalingNetwork.mRemoteStream)//BrowserMediaStream
+             var f1=call.mNetwork.TryGetFrame();//BrowserMediaNetwork.TryGetFrame
+             console.log('GetFrame f1',f1);
+             var f2=call.mNetwork.mSignalingNetwork.mRemoteStream.TryGetFrame();//BrowserMediaStream.TryGetFrame
+             console.log('GetFrame f2',f2);
+         });
+         $('#btnTriggerEvent').click(function(){
+             console.log('TriggerEvent',call);
+             call.Update();
+         });
+
+        }
+    </script>
+</html>
